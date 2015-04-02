@@ -1,5 +1,6 @@
 require 'rubygems_api/utilities'
 require 'rubygems_api/actions/gems'
+require 'rubygems_api/actions/gem_versions'
 require 'hurley'
 require 'json'
 require 'yaml'
@@ -47,6 +48,10 @@ module Rubygems
 
       def gems
         @gems ||= Rubygems::API::Gems.new @client
+      end
+
+      def gem_versions
+        @gem_versions ||= Rubygems::API::Gems_Versions.new @client
       end
     end
   end
