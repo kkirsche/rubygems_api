@@ -67,6 +67,26 @@ module Rubygems
 
         response
       end
+
+      def versions(gem_name, format = 'json')
+        if validate_format(format)
+          response = @client.get("versions/#{gem_name}.#{format}")
+          response = format_json_body(response) if format == 'json'
+          response = format_yaml_body(response) if format == 'yaml'
+        end
+
+        response
+      end
+
+      def downloads(gem_name, gem_version, format = 'json')
+        if validate_format(format)
+          response = @client.get("downloads/#{gem_name}-#{gem_version}.#{format}")
+          response = format_json_body(response) if format == 'json'
+          response = format_yaml_body(response) if format == 'yaml'
+        end
+
+        response
+      end
     end
   end
 end

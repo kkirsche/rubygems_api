@@ -1,6 +1,5 @@
 require 'rubygems_api/utilities'
 require 'rubygems_api/actions/gems'
-require 'rubygems_api/actions/gem_versions'
 require 'hurley'
 require 'json'
 require 'yaml'
@@ -8,7 +7,9 @@ require 'yaml'
 module Rubygems
   module API
     class Client
+      include Rubygems::API::Utilities
       attr_accessor :client, :api_key
+
       def initialize(arguments = {})
         @api_key ||= arguments[:api_key] || \
                      nil
@@ -44,6 +45,16 @@ module Rubygems
         @client.header[:Authorization] = @api_key unless @api_key.nil?
 
         @api_key
+      end
+
+      def total_downloads(format = 'json')
+        if validate_format(format)
+          response = @client.get("downloads.#{format}")
+          response = format_json_body(response) if format == 'json'
+          response = format_yaml_body(response) if format == 'yaml'
+        end
+
+        response
       end
 
       def gems
