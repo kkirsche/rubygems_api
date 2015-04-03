@@ -33,7 +33,7 @@ module TestRubygemsAPI
         response['id'].must_equal 1
       end
 
-      it 'should return a hash body when being sent JSON' do
+      it 'should return a hash body when being sent YAML' do
         client = Rubygems::API::Client.new
 
         client.client.connection = Hurley::Test.new do |test|
