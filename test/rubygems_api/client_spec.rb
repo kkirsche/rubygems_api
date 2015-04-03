@@ -142,7 +142,7 @@ module TestRubygemsAPI
         response['id'].must_equal 1
       end
 
-      it 'should return a hash when being add_gem_owner JSON' do
+      it 'should return a hash when receiving add_gem_owner JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -155,7 +155,7 @@ module TestRubygemsAPI
         JSON.parse(response)['id'].must_equal 1
       end
 
-      it 'should return a hash when being remove_gem_owner JSON' do
+      it 'should return a hash when receiving remove_gem_owner JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -168,7 +168,7 @@ module TestRubygemsAPI
         JSON.parse(response)['id'].must_equal 1
       end
 
-      it 'should return a hash when being view_webhooks JSON' do
+      it 'should return a hash when receiving view_webhooks JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -181,7 +181,7 @@ module TestRubygemsAPI
         response['id'].must_equal 1
       end
 
-      it 'should return a hash when being register_webhook JSON' do
+      it 'should return a hash when receiving register_webhook JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -196,7 +196,7 @@ module TestRubygemsAPI
         JSON.parse(response)['id'].must_equal 1
       end
 
-      it 'should return a hash when being remove_webhook JSON' do
+      it 'should return a hash when receiving remove_webhook JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -211,7 +211,7 @@ module TestRubygemsAPI
         JSON.parse(response)['id'].must_equal 1
       end
 
-      it 'should return a hash when being fire_webhook JSON' do
+      it 'should return a hash when receiving fire_webhook JSON' do
         client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
 
         client.client.connection = Hurley::Test.new do |test|
@@ -224,6 +224,45 @@ module TestRubygemsAPI
           'rubygem_api', 'http://www.url.com').body
 
         JSON.parse(response)['id'].must_equal 1
+      end
+
+      it 'should return a hash when receiving latest_activity JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/activity/latest.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.latest_activity.body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash when receiving just_updated JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/activity/just_updated.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.just_updated.body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash when receiving API JSON' do
+        client = Rubygems::API::Client.new
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/api_key.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"rubygems_api_key": 1})]
+          end
+        end
+
+        response = client.set_api_key('username', 'password').body
+        response['rubygems_api_key'].must_equal 1
       end
     end
   end
