@@ -2,7 +2,7 @@ require 'rubygems_api/utilities'
 require 'hurley'
 require 'json'
 require 'yaml'
-require 'CGI'
+require 'cgi'
 
 module Rubygems
   module API
