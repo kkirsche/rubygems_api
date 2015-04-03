@@ -8,7 +8,7 @@ module Rubygems
       end
 
       def format_body(args = {})
-        unless args[:skip_format]
+        if args[:skip_format].nil?
           response = format_json_body(args[:response]) if args[:format] == 'json'
           response = format_yaml_body(args[:response]) if args[:format] == 'yaml'
         end

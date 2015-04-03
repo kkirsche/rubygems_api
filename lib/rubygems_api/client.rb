@@ -210,19 +210,21 @@ module Rubygems
       end
 
       def set_api_key(username, password, format = 'json', args = {})
+        username = CGI.escape(username)
+        password = CGI.escape(password)
         if validate_format(format)
-          response = @client.get("#{username}:#{password}@rubygems.org/api/v1/api_key.#{format}") do |req|
-            puts 'Username: ' + req.url.user + "\n"
-            puts 'Password: ' + req.url.password + "\n"
-            puts 'URL: '
-            puts req.url.basic_auth
+          response = @client.get("https://#{username}:#{password}@rubygems.org/api/v1/api_key.#{format}") do |req|
+            req.header[:Authorization] = req.url.basic_auth.gsub!(/(\n|\r|\t)+/, '')
           end
 
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
+          if response.success?
+            format_body response: response, skip_format: args[:skip_format],
+                        format: format
 
-        api_key(response.body[:rubygems_api_key])
+            response.body[:rubygems_api_key] = response.body['rubygems_api_key']
+            api_key(response.body[:rubygems_api_key])
+          end
+        end
 
         response
       end
