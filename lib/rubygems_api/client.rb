@@ -19,6 +19,7 @@ module Rubygems
 
         @client = Hurley::Client.new 'https://rubygems.org/api/v1/'
         ssl(arguments)
+        @client.request_options.redirection_limit = 10
 
         @client.header[:Authorization] = @api_key unless @api_key.nil?
 
@@ -225,6 +226,17 @@ module Rubygems
             api_key(response.body[:rubygems_api_key])
           end
         end
+
+        response
+      end
+
+      def gem_dependencies(args = [])
+        response = @client.get('dependencies', {}.tap do |hash|
+          args = Array.new(1, args) if args.is_a? String
+          hash[:gems] = args.join(',')
+        end)
+
+        response.body = Marshal.load(response.body)
 
         response
       end
