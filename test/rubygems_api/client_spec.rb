@@ -115,6 +115,32 @@ module TestRubygemsAPI
         response = client.gem_downloads('rubygems_api', '1.0.0', 'json').body
         response['id'].must_equal 1
       end
+
+      it 'should return a hash when being sent gems_by_owner JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/owners/kkirsche/gems.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.gems_by_owner('kkirsche').body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash when being sent gem_owners JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/gems/rubygems_api/owners.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.gem_owners('rubygems_api').body
+        response['id'].must_equal 1
+      end
     end
   end
 end

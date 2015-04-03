@@ -49,12 +49,11 @@ module Rubygems
       end
 
       def get(url, format, hash, args = {})
-        if validate_format(format)
+        if validate_format format
           response = @client.get(url, hash)
 
           format_body response: response, skip_format: args[:skip_format],
                       format: format if response.success?
-
         end
 
         response
