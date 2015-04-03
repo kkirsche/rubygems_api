@@ -1,4 +1,6 @@
-# RubygemsApi
+[![Build Status](https://travis-ci.org/kkirsche/rubygems_api.svg?branch=master)](https://travis-ci.org/kkirsche/rubygems_api) [![Code Climate](https://codeclimate.com/github/kkirsche/rubygems_api/badges/gpa.svg)](https://codeclimate.com/github/kkirsche/rubygems_api) [![Test Coverage](https://codeclimate.com/github/kkirsche/rubygems_api/badges/coverage.svg)](https://codeclimate.com/github/kkirsche/rubygems_api)
+
+# RubyGems API Client
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rubygems_api`. To experiment with that code, run `bin/console` for an interactive prompt.
 
