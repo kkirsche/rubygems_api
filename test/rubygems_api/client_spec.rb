@@ -141,6 +141,90 @@ module TestRubygemsAPI
         response = client.gem_owners('rubygems_api').body
         response['id'].must_equal 1
       end
+
+      it 'should return a hash when being add_gem_owner JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.post '/api/v1/gems/rubygems_api/owners' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.add_gem_owner('rubygems_api', 'test@email.com').body
+        JSON.parse(response)['id'].must_equal 1
+      end
+
+      it 'should return a hash when being remove_gem_owner JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.delete '/api/v1/gems/rubygems_api/owners' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.remove_gem_owner('rubygems_api', 'test@email.com').body
+        JSON.parse(response)['id'].must_equal 1
+      end
+
+      it 'should return a hash when being view_webhooks JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/web_hooks.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.view_webhooks.body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash when being register_webhook JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.post '/api/v1/web_hooks' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.register_webhook(
+          'rubygem_api', 'http://www.url.com').body
+
+        JSON.parse(response)['id'].must_equal 1
+      end
+
+      it 'should return a hash when being remove_webhook JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.delete '/api/v1/web_hooks/remove' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.remove_webhook(
+          'rubygem_api', 'http://www.url.com').body
+
+        JSON.parse(response)['id'].must_equal 1
+      end
+
+      it 'should return a hash when being fire_webhook JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.post '/api/v1/web_hooks/fire' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.fire_webhook(
+          'rubygem_api', 'http://www.url.com').body
+
+        JSON.parse(response)['id'].must_equal 1
+      end
     end
   end
 end
