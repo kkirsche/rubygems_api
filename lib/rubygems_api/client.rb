@@ -48,44 +48,30 @@ module Rubygems
         @api_key
       end
 
-      def rubygems_total_downloads(format = 'json', args = {})
+      def get(url, format, hash, args = {})
         if validate_format(format)
-          response = @client.get("downloads.#{format}")
+          response = @client.get(url, hash)
           format_body response: response, skip_format: args[:skip_format],
                       format: format
         end
 
         response
+      end
+
+      def rubygems_total_downloads(format = 'json', args = {})
+        get("downloads.#{format}", format, nil, args)
       end
 
       def gem_info(name, format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("gems/#{name}.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("gems/#{name}.#{format}", format, nil, args)
       end
 
       def gem_search(query, format = 'json', args = { page: 1 })
-        if validate_format(format)
-          response = @client.get("search.#{format}", query: query, page: args[:page])
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("search.#{format}", format, { query: query, page: args[:page] }, args)
       end
 
       def my_gems(format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("gems.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("gems.#{format}", format, nil, args)
       end
 
       def submit_gem(gem_file)
