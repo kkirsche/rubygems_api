@@ -2,6 +2,7 @@ require 'rubygems_api/utilities'
 require 'hurley'
 require 'json'
 require 'yaml'
+require 'CGI'
 
 module Rubygems
   module API
@@ -46,21 +47,21 @@ module Rubygems
         @api_key
       end
 
-      def rubygems_total_downloads(format = 'json')
+      def rubygems_total_downloads(format = 'json', args = {})
         if validate_format(format)
           response = @client.get("downloads.#{format}")
-          response = format_json_body(response) if format == 'json'
-          response = format_yaml_body(response) if format == 'yaml'
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
 
         response
       end
 
-      def gem_info(name, format = 'json')
+      def gem_info(name, format = 'json', args = {})
         if validate_format(format)
           response = @client.get("gems/#{name}.#{format}")
-          response = format_json_body(response) if format == 'json'
-          response = format_yaml_body(response) if format == 'yaml'
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
 
         response
@@ -69,10 +70,8 @@ module Rubygems
       def gem_search(query, format = 'json', args = { page: 1 })
         if validate_format(format)
           response = @client.get("search.#{format}", query: query, page: args[:page])
-          unless args[:skip_format]
-            response = format_json_body(response) if format == 'json'
-            response = format_yaml_body(response) if format == 'yaml'
-          end
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
 
         response
@@ -81,10 +80,8 @@ module Rubygems
       def my_gems(format = 'json', args = {})
         if validate_format(format)
           response = @client.get("gems.#{format}")
-          unless args[:skip_format]
-            response = format_json_body(response) if format == 'json'
-            response = format_yaml_body(response) if format == 'yaml'
-          end
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
 
         response
@@ -117,22 +114,116 @@ module Rubygems
         response
       end
 
-      def gem_versions(gem_name, format = 'json')
+      def gem_versions(gem_name, format = 'json', args = {})
         if validate_format(format)
           response = @client.get("versions/#{gem_name}.#{format}")
-          response = format_json_body(response) if format == 'json'
-          response = format_yaml_body(response) if format == 'yaml'
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
 
         response
       end
 
-      def gem_downloads(gem_name, gem_version, format = 'json')
+      def gem_downloads(gem_name, gem_version, format = 'json', args = {})
         if validate_format(format)
           response = @client.get("downloads/#{gem_name}-#{gem_version}.#{format}")
-          response = format_json_body(response) if format == 'json'
-          response = format_yaml_body(response) if format == 'yaml'
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
         end
+
+        response
+      end
+
+      def gems_by_owner(username, format = 'json', args = {})
+        if validate_format(format)
+          response = @client.get("owners/#{username}/gems.#{format}")
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        response
+      end
+
+      def gem_owners(gem_name, format = 'json', args = {})
+        if validate_format(format)
+          response = @client.get("gems/#{gem_name}/owners.#{format}")
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        response
+      end
+
+      def add_gem_owner(gem_name, email, args = {})
+        response = @client.post("gems/#{gem_name}/owners",
+                               email: email)
+      end
+
+      def remove_gem_owner(gem_name, email, args = {})
+        response = @client.delete("gems/#{gem_name}/owners",
+                               email: email)
+      end
+
+      def view_webhooks(format = 'json', args = {})
+        if validate_format(format)
+          response = @client.get("web_hooks.#{format}")
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        response
+      end
+
+      def register_webhook(gem_name, url, args = {})
+        response = @client.post("web_hooks", gem_name: gem_name,
+                                             url: url)
+      end
+
+      def remove_webhook(gem_name, url, args = {})
+        response = @client.delete("web_hooks/remove",
+                                  gem_name: gem_name, url: url)
+      end
+
+      def fire_webhook(gem_name, url, args = {})
+        response = @client.post("web_hooks/fire",
+                                  gem_name: gem_name, url: url)
+      end
+
+      def latest_activity(format = 'json', args = {})
+        if validate_format(format)
+          response = @client.get("activity/latest.#{format}")
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        response
+      end
+
+      def just_updated(format = 'json', args = {})
+        if validate_format(format)
+          response = @client.get("activity/just_updated.#{format}")
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        response
+      end
+
+      def set_api_key(username, password, format = 'json', args = {})
+        if validate_format(format)
+          auth = CGI.escape(username + ':' + password)
+          response = @client.get("https://kev.kirsche%40gmail.com:843.cBYcaAWFtZ.%3EAxscU79P%2FLF7*%3Ejtw%3FaJ.o969CH%3B%259CAyF@rubygems.org/api/v1/api_key.#{format}") do |req|
+            puts 'Username: ' + req.url.user + "\n"
+            puts 'Password: ' + req.url.password + "\n"
+            puts 'URL: '
+            puts req.url.basic_auth
+          end
+
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format
+        end
+
+        api_key(response.body[:rubygems_api_key])
 
         response
       end

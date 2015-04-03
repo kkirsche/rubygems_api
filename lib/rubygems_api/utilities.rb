@@ -7,6 +7,15 @@ module Rubygems
         raise 'Invalid format requested. Please select either json or yaml.'
       end
 
+      def format_body(args = {})
+        unless args[:skip_format]
+          response = format_json_body(args[:response]) if args[:format] == 'json'
+          response = format_yaml_body(args[:response]) if args[:format] == 'yaml'
+        end
+
+        response
+      end
+
       def format_json_body(response)
         response.body = JSON.parse(response.body)
 
