@@ -65,13 +65,6 @@ module Rubygems
 
         response
       end
-
-      def api_key(key = nil)
-        @api_key = key unless key.nil?
-        @client.header[:Authorization] = @api_key unless @api_key.nil?
-
-        @api_key
-      end
     end
   end
 end
