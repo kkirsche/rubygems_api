@@ -5,7 +5,8 @@ module Rubygems
       def validate_format(format)
         return true if format == 'json' || format == 'yaml'
 
-        raise 'Invalid format requested. Please select either json or yaml.'
+        fail RuntimeError,
+             'Invalid format requested. Please select either json or yaml.'
       end
 
       def format_body(args = {})

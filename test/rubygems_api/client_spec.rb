@@ -116,7 +116,7 @@ module TestRubygemsAPI
         end
 
         response = client.yank_gem('name').body
-        response['id'].must_equal 1
+        JSON.parse(response)['id'].must_equal 1
       end
 
       it 'should return a hash when being sent yank_gem JSON' do

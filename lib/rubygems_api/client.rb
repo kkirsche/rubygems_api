@@ -58,6 +58,16 @@ module Rubygems
         response
       end
 
+      def yank_api(url, method_symbol, gem_name, gem_version, args = {})
+        response = @client.method(method_symbol).call(url, {}.tap do |hash|
+          hash[:gem_name] = gem_name
+          hash[:gem_version] = gem_version unless gem_version.nil?
+          hash[:platform] = args[:platform] unless args[:platform].nil?
+        end)
+
+        response
+      end
+
       def rubygems_total_downloads(format = 'json', args = {})
         get("downloads.#{format}", format, nil, args)
       end
@@ -82,23 +92,11 @@ module Rubygems
       end
 
       def yank_gem(gem_name, gem_version = nil, args = {})
-        response = @client.delete('gems/yank', {}.tap do |hash|
-          hash[:gem_name] = gem_name
-          hash[:gem_version] = gem_version unless gem_version.nil?
-          hash[:platform] = args[:platform] unless args[:platform].nil?
-        end)
-
-        format_json_body response
+        yank_api('gems/yank', :delete, gem_name, gem_version, args)
       end
 
       def unyank_gem(gem_name, gem_version = nil, args = {})
-        response = @client.put('gems/unyank', {}.tap do |hash|
-          hash[:gem_name] = gem_name
-          hash[:gem_version] = gem_version unless gem_version.nil?
-          hash[:platform] = args[:platform] unless args[:platform].nil?
-        end)
-
-        response
+        yank_api('gems/unyank', :put, gem_name, gem_version, args)
       end
 
       def gem_versions(gem_name, format = 'json', args = {})
