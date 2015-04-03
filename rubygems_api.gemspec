@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = ["kevin.kirsche@verizon.com"]
 
   spec.summary       = %q{RubyGems v1 API client.}
-  spec.description   = %q{RubyGems v1 API client.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.description   = %q{Full featured RubyGems v1 API client using Hurley.}
+  spec.homepage      = "https://github.com/kkirsche/rubygems_api"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
