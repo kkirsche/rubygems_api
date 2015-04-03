@@ -29,6 +29,49 @@ module Rubygems
 
         response
       end
+
+      def ssl(arguments)
+        @skip_verification = arguments[:skip_verification] || \
+                      true
+
+        @ca_path = arguments[:ca_path]  || \
+                   `openssl version -d`.split(/"/)[1] + '/certs'
+
+        @ssl_version = arguments[:ssl_version]  || \
+                       'SSLv23'
+
+        @client.ssl_options.skip_verification = @skip_verification
+        @client.ssl_options.ca_path = @ca_path
+        @client.ssl_options.version = @ssl_version
+      end
+
+      def get(url, format, hash, args = {})
+        if validate_format format
+          response = @client.get(url, hash)
+
+          format_body response: response, skip_format: args[:skip_format],
+                      format: format if response.success?
+        end
+
+        response
+      end
+
+      def yank_api(url, method_symbol, gem_name, gem_version, args = {})
+        response = @client.method(method_symbol).call(url, {}.tap do |hash|
+          hash[:gem_name] = gem_name
+          hash[:gem_version] = gem_version unless gem_version.nil?
+          hash[:platform] = args[:platform] unless args[:platform].nil?
+        end)
+
+        response
+      end
+
+      def api_key(key = nil)
+        @api_key = key unless key.nil?
+        @client.header[:Authorization] = @api_key unless @api_key.nil?
+
+        @api_key
+      end
     end
   end
 end

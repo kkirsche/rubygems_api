@@ -252,12 +252,13 @@ module TestRubygemsAPI
         response['id'].must_equal 1
       end
 
-      it 'should return a hash when receiving API JSON' do
+      it 'should return a hash when receiving API Key JSON' do
         client = Rubygems::API::Client.new
 
         client.client.connection = Hurley::Test.new do |test|
           test.get '/api/v1/api_key.json' do
-            [200, { 'Content-Type' => 'application/json' }, %({"rubygems_api_key": 1})]
+            [200, { 'Content-Type' => 'application/json' },
+             %({"rubygems_api_key": 1})]
           end
         end
 
