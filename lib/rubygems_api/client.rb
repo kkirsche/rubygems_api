@@ -102,63 +102,31 @@ module Rubygems
       end
 
       def gem_versions(gem_name, format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("versions/#{gem_name}.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("versions/#{gem_name}.#{format}", format, nil, args)
       end
 
       def gem_downloads(gem_name, gem_version, format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("downloads/#{gem_name}-#{gem_version}.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("downloads/#{gem_name}-#{gem_version}.#{format}", format, nil, args)
       end
 
       def gems_by_owner(username, format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("owners/#{username}/gems.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("owners/#{username}/gems.#{format}", format, nil, args)
       end
 
       def gem_owners(gem_name, format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("gems/#{gem_name}/owners.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("gems/#{gem_name}/owners.#{format}", format, nil, args)
       end
 
       def add_gem_owner(gem_name, email, args = {})
-        response = @client.post("gems/#{gem_name}/owners",
-                               email: email)
+        @client.post("gems/#{gem_name}/owners", email: email)
       end
 
       def remove_gem_owner(gem_name, email, args = {})
-        response = @client.delete("gems/#{gem_name}/owners",
-                               email: email)
+        @client.delete("gems/#{gem_name}/owners", email: email)
       end
 
       def view_webhooks(format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("web_hooks.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("web_hooks.#{format}", format, nil, args)
       end
 
       def register_webhook(gem_name, url, args = {})
@@ -177,23 +145,11 @@ module Rubygems
       end
 
       def latest_activity(format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("activity/latest.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("activity/latest.#{format}", format, nil, args)
       end
 
       def just_updated(format = 'json', args = {})
-        if validate_format(format)
-          response = @client.get("activity/just_updated.#{format}")
-          format_body response: response, skip_format: args[:skip_format],
-                      format: format
-        end
-
-        response
+        get("activity/just_updated.#{format}", format, nil, args)
       end
 
       def set_api_key(username, password, format = 'json', args = {})
