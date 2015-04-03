@@ -105,6 +105,19 @@ module TestRubygemsAPI
         response = client.my_gems('yaml').body
         response[:total].must_equal 4_817_644_982
       end
+
+      it 'should return a hash when being sent yank_gem JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.delete '/api/v1/gems/yank' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.yank_gem('name').body
+        response['id'].must_equal 1
+      end
     end
   end
 end
