@@ -131,6 +131,46 @@ module TestRubygemsAPI
         response = client.unyank_gem('name').body
         JSON.parse(response)['id'].must_equal 1
       end
+
+      it 'should return a hash when being sent gem_versions JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/versions/rubygems_api.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.gem_versions('rubygems_api', 'json').body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash when being sent gem_versions YAML' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/versions/rubygems_api.yaml' do
+            [200, { 'Content-Type' => 'application/yaml' }, %(---
+            :total: 1)]
+          end
+        end
+
+        response = client.gem_versions('rubygems_api', 'yaml').body
+        response[:total].must_equal 1
+      end
+
+      it 'should return a hash when being sent gem_downloads JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/downloads/rubygems_api-1.0.0.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.gem_downloads('rubygems_api', '1.0.0', 'json').body
+        response['id'].must_equal 1
+      end
     end
   end
 end
