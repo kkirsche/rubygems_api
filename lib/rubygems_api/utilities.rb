@@ -1,5 +1,6 @@
 module Rubygems
   module API
+    # The Utilities module allows us to use the same functions throughout
     module Utilities
       def validate_format(format)
         return true if format == 'json' || format == 'yaml'
@@ -26,12 +27,6 @@ module Rubygems
         response.body = YAML.load(response.body)
 
         response
-      end
-
-      def validate_api_key(client)
-        return true unless client.api_key.nil?
-
-        raise 'No API Key set. This request requires a valid key to function.'
       end
     end
   end

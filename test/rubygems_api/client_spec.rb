@@ -25,7 +25,7 @@ module TestRubygemsAPI
         response[:total].must_equal 4_817_644_982
       end
 
-      it 'should return a hash body when being sent JSON' do
+      it 'should return a hash body when being sent gem_info JSON' do
         client = Rubygems::API::Client.new
 
         client.client.connection = Hurley::Test.new do |test|
@@ -38,7 +38,7 @@ module TestRubygemsAPI
         response['id'].must_equal 1
       end
 
-      it 'should return a hash body when being sent YAML' do
+      it 'should return a hash body when being sent gem_info YAML' do
         client = Rubygems::API::Client.new
 
         client.client.connection = Hurley::Test.new do |test|
@@ -49,6 +49,60 @@ module TestRubygemsAPI
         end
 
         response = client.gem_info('rubygems_api', 'yaml').body
+        response[:total].must_equal 4_817_644_982
+      end
+
+      it 'should return a hash body when being sent gem_search JSON' do
+        client = Rubygems::API::Client.new
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/search.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.gem_search('rubygems_api', 'json').body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash body when being sent gem_search YAML' do
+        client = Rubygems::API::Client.new
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/search.yaml' do
+            [200, { 'Content-Type' => 'application/yaml' }, %(---
+            :total: 4817644982)]
+          end
+        end
+
+        response = client.gem_search('rubygems_api', 'yaml').body
+        response[:total].must_equal 4_817_644_982
+      end
+
+      it 'should return a hash body when being sent my_gems JSON' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/gems.json' do
+            [200, { 'Content-Type' => 'application/json' }, %({"id": 1})]
+          end
+        end
+
+        response = client.my_gems('json').body
+        response['id'].must_equal 1
+      end
+
+      it 'should return a hash body when being sent my_gems YAML' do
+        client = Rubygems::API::Client.new api_key: 'exampleAPIKey'
+
+        client.client.connection = Hurley::Test.new do |test|
+          test.get '/api/v1/gems.yaml' do
+            [200, { 'Content-Type' => 'application/yaml' }, %(---
+            :total: 4817644982)]
+          end
+        end
+
+        response = client.my_gems('yaml').body
         response[:total].must_equal 4_817_644_982
       end
     end
